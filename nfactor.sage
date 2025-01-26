@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 
 def retrieve_prime(n, upper_known_bits, number_of_bits):
     """
@@ -11,7 +13,6 @@ def retrieve_prime(n, upper_known_bits, number_of_bits):
     print("\t Creating matrix: [[X^2, X*upper_known_bits,0], [0,X,upper_known_bits],[0,0,n]]")
 
     M = matrix( [[X^2, X*upper_known_bits,0], [0,X,upper_known_bits],[0,0,n]] )
-
     print("\t Performing LLL reduction on the matrix")
     M_LLL = M.LLL()
     print("\t Defining polynomial g(x) from LLL-reduced matrix (M'): g(x) = M'[0][0]*x^2/X^2 + M'[0][1]*x/X + M'[0][2]")
@@ -40,15 +41,20 @@ def decrypt(ciphertext, p,q,e,n):
     d = calculate_private_component(e,p,q,phi)
     print(f"\t Calculated private component (d): {d}")
     pt  = pow(ciphertext,d,n)
-    print(f"\t Recovered ciphertext: {hex(pt)}")
+    print(f"\t Recovered plaintext (PT): {hex(pt)}")
     return pt
 
-def generate_example(plaintext, number_of_bits):
+def generate_example(plaintext, number_of_bits,e=3):
     print("[1] Generating example...")
-    p = random_prime(2^512)
-    q = random_prime(2^512)
-    n = p * q
-    e = 65537
+    while True:
+      p = random_prime(2^512)
+      q = random_prime(2^512)
+      n = p * q
+      if (((p-1) * (q-1)) % 3) != 0:
+        print("found")
+        break
+  
+
     ct = plaintext^e % n
 
     print(f"\t p: {p}")
@@ -61,7 +67,7 @@ def generate_example(plaintext, number_of_bits):
     return p - (p % 2 ^ number_of_bits), n, ct
 
 
-N_bits = 10
+N_bits = 100
 plaintext = 0xdeadbeef
 
 print(f"[0] Parameters")
@@ -74,6 +80,6 @@ print(f"partially_knwon_prime (p): {a}\n")
 
 possible_p, possible_q = retrieve_prime(n,a,N_bits)
 
-pt = decrypt(ct,possible_p,possible_q,65537,n)
+pt = decrypt(ct,possible_p,possible_q,3,n)
 
 assert pt == plaintext
