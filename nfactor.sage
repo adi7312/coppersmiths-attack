@@ -1,6 +1,3 @@
-import matplotlib.pyplot as plt
-
-
 def retrieve_prime(n, upper_known_bits, number_of_bits):
     """
     Based on Coppersmith Method - utilizes LLL reduction
