@@ -69,7 +69,7 @@ plaintext = 0xdeadbeef
 
 print(f"[0] Parameters")
 print(f"\t PT: {hex(plaintext)}")
-print(f"\t Number of known bits: {N_bits}\n")
+print(f"\t Number of unknown bits: {N_bits}\n")
 
 a,n,ct = generate_example(plaintext, N_bits)
 
